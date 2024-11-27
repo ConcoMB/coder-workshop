@@ -1,24 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import PokemonList from './components/PokemonList';
+import PokemonDetail from './components/PokemonDetail';
+
+import pokemonData from './data/Pokedex.json';
+
+const formattedPokemonData = pokemonData.map(pokemon => {
+  if (!pokemon?.id || !pokemon?.name?.english || !pokemon?.type || !pokemon?.image?.sprite) {
+    console.error(`Invalid pokemon data structure:`, pokemon);
+    return null;
+  }
+  return {
+    ndex: `#${pokemon.id.toString().padStart(4, '0')}`,
+    name: pokemon.name.english,
+    types: pokemon.type,
+    image: pokemon.image.sprite
+  }
+}).filter(Boolean);
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<PokemonList pokemonData={formattedPokemonData} />} />
+          <Route path="/pokemon/:id" element={<PokemonDetail />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
