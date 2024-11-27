@@ -4,12 +4,18 @@ import PokemonDetail from './components/PokemonDetail';
 
 import pokemonData from './data/Pokedex.json';
 
-const formattedPokemonData = pokemonData.map(pokemon => ({
-  ndex: `#${pokemon.id.toString().padStart(4, '0')}`,
-  name: pokemon.name.english,
-  types: pokemon.type,
-  image: pokemon.image.sprite
-}));
+const formattedPokemonData = pokemonData.map(pokemon => {
+  if (!pokemon?.id || !pokemon?.name?.english || !pokemon?.type || !pokemon?.image?.sprite) {
+    console.error(`Invalid pokemon data structure:`, pokemon);
+    return null;
+  }
+  return {
+    ndex: `#${pokemon.id.toString().padStart(4, '0')}`,
+    name: pokemon.name.english,
+    types: pokemon.type,
+    image: pokemon.image.sprite
+  }
+}).filter(Boolean);
 
 function App() {
   return (
